@@ -7,9 +7,8 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\Type;
 
-Class LatitudeValidator extends ComposeValidator
+final class LatitudeValidator extends ComposeValidator
 {
-
     protected function getSupportedConstraint(): string
     {
         return Latitude::class;
@@ -17,13 +16,12 @@ Class LatitudeValidator extends ComposeValidator
 
     protected function getConstraints($value, Constraint $constraint): array
     {
-        if(is_float($value) OR is_integer($value)){
+        if (is_float($value) or is_integer($value)) {
             return [
                 new GreaterThanOrEqual(-90),
                 new LessThanOrEqual(90),
             ];
-        }
-        else{
+        } else {
             return [
                 new Type('float'),
             ];
@@ -34,5 +32,4 @@ Class LatitudeValidator extends ComposeValidator
     {
         return false;
     }
-
 }

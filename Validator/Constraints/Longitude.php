@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraint;
  *
  * @author Sylvain Fabre <sylvain.fabre@assoconnect.com>
  */
-Class Longitude extends Constraint
+final class Longitude extends Constraint
 {
 
 }

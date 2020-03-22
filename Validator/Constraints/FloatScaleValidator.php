@@ -6,28 +6,25 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-Class FloatScaleValidator extends ConstraintValidator
+final class FloatScaleValidator extends ConstraintValidator
 {
-
     public function validate($value, Constraint $constraint)
     {
-        if($constraint instanceof FloatScale === false) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\FloatScale');
+        if ($constraint instanceof FloatScale === false) {
+            throw new UnexpectedTypeException($constraint, FloatScale::class);
         }
 
-        if(is_float($value) === false) {
+        if (is_float($value) === false) {
             return;
         }
 
-        if($value !== round($value, $constraint->scale)) {
+        if ($value !== round($value, $constraint->scale)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setParameter('{{ scale }}', $constraint->scale)
                 ->setCode(FloatScale::TOO_PRECISE_ERROR)
-                ->addViolation();
-            return;
+                ->addViolation()
+            ;
         }
-
     }
-
 }

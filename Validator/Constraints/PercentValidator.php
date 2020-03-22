@@ -7,9 +7,8 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\Type;
 
-Class PercentValidator extends ComposeValidator
+final class PercentValidator extends ComposeValidator
 {
-
     protected function getSupportedConstraint(): string
     {
         return Percent::class;
@@ -17,13 +16,12 @@ Class PercentValidator extends ComposeValidator
 
     protected function getConstraints($value, Constraint $constraint): array
     {
-        if(is_float($value) OR is_integer($value)){
+        if (is_float($value) or is_integer($value)) {
             return [
                 new GreaterThanOrEqual($constraint->min),
                 new LessThanOrEqual($constraint->max),
             ];
-        }
-        else{
+        } else {
             return [
                 new Type('float'),
             ];
@@ -34,5 +32,4 @@ Class PercentValidator extends ComposeValidator
     {
         return false;
     }
-
 }

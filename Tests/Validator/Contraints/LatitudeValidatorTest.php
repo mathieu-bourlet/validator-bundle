@@ -2,23 +2,27 @@
 
 namespace AssoConnect\ValidatorBundle\Tests\Validator\Constraints;
 
-use AssoConnect\ValidatorBundle\Test\ConstraintValidatorWithKernelTestCase;
-use AssoConnect\ValidatorBundle\Validator\Constraints\FloatScale;
+use AssoConnect\ValidatorBundle\Tests\ConstraintValidatorWithKernelTestCase;
 use AssoConnect\ValidatorBundle\Validator\Constraints\Latitude;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\Type;
 
-Class LatitudeValidatorTest extends ConstraintValidatorWithKernelTestCase
+final class LatitudeValidatorTest extends ConstraintValidatorWithKernelTestCase
 {
-
-    public function getContraint($options = []): Constraint
+    /**
+     * @param $value
+     *
+     * @dataProvider providerValidValue
+     */
+    public function testItHandleValidValue($value)
     {
-        return new Latitude($options);
+        $errors = $this->validator->validate($value, new Latitude());
+
+        $this->assertCount(0, $errors);
     }
 
-    public function providerValidValue() :array
+    public function providerValidValue(): array
     {
         return [
             [null],
@@ -28,15 +32,28 @@ Class LatitudeValidatorTest extends ConstraintValidatorWithKernelTestCase
         ];
     }
 
-    public function providerInvalidValue() :array
+    /**
+     * @param $value
+     * @param $code
+     *
+     * @dataProvider providerInvalidValue
+     */
+    public function testItHandleInvalidValue($value, $code)
+    {
+        $errors = $this->validator->validate($value, new Latitude());
+
+        $this->assertCount(1, $errors);
+        $this->assertEquals($code, $errors[0]->getCode());
+    }
+
+    public function providerInvalidValue(): array
     {
         return [
             // Value type
-            ['', array(), [Type::INVALID_TYPE_ERROR]],
+            ['', Type::INVALID_TYPE_ERROR],
             // Default range
-            [-91.0, array(), [GreaterThanOrEqual::TOO_LOW_ERROR]],
-            [91.0, array(), [LessThanOrEqual::TOO_HIGH_ERROR]],
+            [-91.0, GreaterThanOrEqual::TOO_LOW_ERROR],
+            [91.0, LessThanOrEqual::TOO_HIGH_ERROR],
         ];
     }
-
 }

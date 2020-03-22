@@ -14,9 +14,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  * Validates whether a value is a valid locale code.
  *
  */
-class PostalValidator extends ConstraintValidator
+final class PostalValidator extends ConstraintValidator
 {
-
     /**
      * @link https://en.wikipedia.org/wiki/List_of_postal_codes
      */
@@ -275,9 +274,6 @@ class PostalValidator extends ConstraintValidator
 
     private $propertyAccessor;
 
-    /**
-     * {@inheritdoc}
-     */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Postal) {

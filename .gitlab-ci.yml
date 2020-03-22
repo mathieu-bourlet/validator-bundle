@@ -18,4 +18,4 @@ before_script:
 
 test:app:
   script:
-  - php vendor/bin/phpunit --configuration phpunit.xml.dist --colors=never
+    - php vendor/bin/phpunit --configuration phpunit.xml.dist --colors=never

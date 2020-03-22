@@ -8,20 +8,19 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-Class PhoneValidator extends ConstraintValidator
+final class PhoneValidator extends ConstraintValidator
 {
-
     public function validate($value, Constraint $constraint)
     {
-        if($constraint instanceof Phone === false) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Phone');
+        if ($constraint instanceof Phone === false) {
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Phone');
         }
 
-        if($value === '' OR $value === null) {
+        if ($value === '' or $value === null) {
             return;
         }
 
-        if(substr($value, 0, 1) !== '+') {
+        if (substr($value, 0, 1) !== '+') {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(PhoneLandline::INVALID_FORMAT_ERROR)
@@ -34,34 +33,30 @@ Class PhoneValidator extends ConstraintValidator
         try {
             $phoneObject = $phoneUtil->parse($phone);
             // Phone number is possible
-            if($phoneUtil->isPossibleNumber($phoneObject)){
+            if ($phoneUtil->isPossibleNumber($phoneObject)) {
                 // Valid phone number
                 $phoneNumberType = $phoneUtil->getNumberType($phoneObject);
-                if(in_array($phoneNumberType, $constraint->validTypes)) {
+                if (in_array($phoneNumberType, $constraint->validTypes)) {
                     return;
-                }
-                else if(in_array($phoneNumberType, $constraint->invalidTypes)){
+                } elseif (in_array($phoneNumberType, $constraint->invalidTypes)) {
                     $this->context->buildViolation($constraint->invalidTypeMessage)
                         ->setParameter('{{ value }}', $this->formatValue($value))
                         ->setCode(Phone::INVALID_TYPE_ERROR)
                         ->addViolation();
-                }
-                else {
+                } else {
                     $this->context->buildViolation($constraint->message)
                         ->setParameter('{{ value }}', $this->formatValue($value))
                         ->setCode(Phone::INVALID_FORMAT_ERROR)
                         ->addViolation();
                 }
-            }
-            else{
+            } else {
                 $this->context->buildViolation($constraint->inexistantMessage)
                     ->setParameter('{{ value }}', $this->formatValue($value))
                     ->setCode(Phone::PHONE_NUMBER_NOT_EXIST)
                     ->addViolation();
             }
-        }
-        catch(NumberParseException $exception){
-            switch($exception->getErrorType()){
+        } catch (NumberParseException $exception) {
+            switch ($exception->getErrorType()) {
                 case NumberParseException::NOT_A_NUMBER:
                     $this->context->buildViolation($constraint->message)
                         ->setParameter('{{ value }}', $this->formatValue($value))
@@ -85,7 +80,5 @@ Class PhoneValidator extends ConstraintValidator
                     throw $exception;
             }
         }
-
     }
-
 }

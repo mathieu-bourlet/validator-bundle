@@ -2,9 +2,9 @@
 
 namespace AssoConnect\ValidatorBundle\Tests\Validator\Constraints;
 
-use AssoConnect\ValidatorBundle\Validator\Constraints\Email;
 use AssoConnect\ValidatorBundle\Validator\Constraints\Postal;
 use AssoConnect\ValidatorBundle\Validator\Constraints\PostalValidator;
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
@@ -19,13 +19,12 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
     public function testInvalidConstraint()
     {
         $this->expectException(UnexpectedTypeException::class);
-        $this->validator->validate(null, new Email());
+        $this->validator->validate(null, $this->createMock(Constraint::class));
     }
 
     public function testMissingPropertyPath()
     {
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = null;
+        $constraint = new Postal([null]);
 
         $this->expectException(ConstraintDefinitionException::class);
         $this->validator->validate(null, $constraint);
@@ -35,8 +34,7 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
     {
         $this->setObject(null);
 
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = 'propertyPath';
+        $constraint = new Postal('propertyPath');
 
         $this->expectException(ConstraintDefinitionException::class);
 
@@ -50,8 +48,7 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = 'invalid';
+        $constraint = new Postal('invalid');
 
         $this->expectException(ConstraintDefinitionException::class);
 
@@ -65,8 +62,7 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = 'country';
+        $constraint = new Postal('country');
 
         $this->validator->validate(null, $constraint);
 
@@ -85,16 +81,15 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $path = 'country';
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = $path;
+        $constraint = new Postal('country');
 
         $this->validator->validate(null, $constraint);
 
         $this
             ->buildViolation(Postal::getErrorName(Postal::MISSING_ERROR))
             ->setCode(Postal::MISSING_ERROR)
-            ->assertRaised();
+            ->assertRaised()
+        ;
     }
 
     public function testPostalNotRequiredError()
@@ -104,16 +99,15 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $path = 'country';
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = $path;
+        $constraint = new Postal('country');
 
         $this->validator->validate('postal', $constraint);
 
         $this
             ->buildViolation(Postal::getErrorName(Postal::NOT_REQUIRED_ERROR))
             ->setCode(Postal::NOT_REQUIRED_ERROR)
-            ->assertRaised();
+            ->assertRaised()
+        ;
     }
 
     public function testInvalidPostalFormatError()
@@ -123,9 +117,7 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $path = 'country';
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = $path;
+        $constraint = new Postal('country');
 
         $this->validator->validate('foo', $constraint);
 
@@ -133,7 +125,8 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
             ->buildViolation(Postal::getErrorName(Postal::INVALID_FORMAT_ERROR))
             ->setParameter('{{ value }}', '"foo"')
             ->setCode(Postal::INVALID_FORMAT_ERROR)
-            ->assertRaised();
+            ->assertRaised()
+        ;
     }
 
     public function testPostalRequiredNoViolation()
@@ -143,9 +136,7 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $path = 'country';
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = $path;
+        $constraint = new Postal('country');
 
         $this->validator->validate('75002', $constraint);
 
@@ -159,9 +150,7 @@ class PostalValidatorTest extends ConstraintValidatorTestCase
 
         $this->setObject($object);
 
-        $path = 'country';
-        $constraint = new Postal();
-        $constraint->countryPropertyPath = $path;
+        $constraint = new Postal('country');
 
         $this->validator->validate('', $constraint);
 

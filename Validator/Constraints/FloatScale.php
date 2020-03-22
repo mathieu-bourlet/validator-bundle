@@ -10,10 +10,9 @@ use Symfony\Component\Validator\Constraint;
  *
  * @author Sylvain Fabre <sylvain.fabre@assoconnect.com>
  */
-Class FloatScale extends Constraint
+final class FloatScale extends Constraint
 {
-
-    const TOO_PRECISE_ERROR = '1cb54d2e-1258-490d-b2cc-91a0a21d9556';
+    public const TOO_PRECISE_ERROR = '1cb54d2e-1258-490d-b2cc-91a0a21d9556';
 
     public $message = 'The float precision is limited to {{ scale }} numbers.';
 
@@ -28,5 +27,4 @@ Class FloatScale extends Constraint
     {
         return ['scale'];
     }
-
 }

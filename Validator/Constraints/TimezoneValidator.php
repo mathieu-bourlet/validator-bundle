@@ -11,15 +11,12 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  *
  * @author Sylvain Fabre <sylvain.fabre@assoconnect.com>
  */
-class TimezoneValidator extends ConstraintValidator
+final class TimezoneValidator extends ConstraintValidator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof Timezone) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Timezone');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\Timezone');
         }
 
         if (null === $value || '' === $value) {
@@ -27,7 +24,7 @@ class TimezoneValidator extends ConstraintValidator
         }
 
         if (!is_string($value)) {
-            throw new UnexpectedTypeException($value, 'string');
+            return;
         }
 
         if (!in_array($value, \DateTimeZone::listIdentifiers())) {

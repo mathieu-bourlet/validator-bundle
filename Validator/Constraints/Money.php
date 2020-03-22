@@ -10,12 +10,10 @@ use Symfony\Component\Validator\Constraint;
  *
  * @author Sylvain Fabre <sylvain.fabre@assoconnect.com>
  */
-Class Money extends Constraint
+final class Money extends Constraint
 {
-
-    const MAX = 100000000.0;
+    public const MAX = 100000000.0;
 
     public $min = 0.0;
     public $max = self::MAX;
-
 }

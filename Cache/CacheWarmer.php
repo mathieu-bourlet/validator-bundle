@@ -5,12 +5,7 @@ namespace AssoConnect\ValidatorBundle\Cache;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-/**
- * Warm the cache defined in services.yaml for Pdp\Cache
- * Class CacheWarmer
- * @package AssoConnect\ValidatorBundle\Cache
- */
-class CacheWarmer implements CacheWarmerInterface
+final class CacheWarmer implements CacheWarmerInterface
 {
     private $cacheFolder;
 

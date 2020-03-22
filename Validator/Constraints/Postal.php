@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  *
  */
-class Postal extends Constraint
+final class Postal extends Constraint
 {
     public const INVALID_FORMAT_ERROR = 'ea4eb1eb-3984-4455-9b00-dcbf5221f933';
 
@@ -27,4 +27,16 @@ class Postal extends Constraint
     );
 
     public $countryPropertyPath;
+
+    public function getRequiredOptions()
+    {
+        return [
+            'countryPropertyPath',
+        ];
+    }
+
+    public function getDefaultOption()
+    {
+        return 'countryPropertyPath';
+    }
 }

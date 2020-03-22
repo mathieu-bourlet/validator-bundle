@@ -10,9 +10,8 @@ use libphonenumber\PhoneNumberType;
  *
  * @author Sylvain Fabre <sylvain.fabre@assoconnect.com>
  */
-Class PhoneMobile extends Phone
+final class PhoneMobile extends Phone
 {
-
     public $validTypes = [
         PhoneNumberType::FIXED_LINE_OR_MOBILE,
         PhoneNumberType::MOBILE,

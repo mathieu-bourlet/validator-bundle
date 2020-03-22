@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraint;
  *
  * @author Sylvain Fabre <sylvain.fabre@assoconnect.com>
  */
-Class Latitude extends Constraint
+final class Latitude extends Constraint
 {
-
 }

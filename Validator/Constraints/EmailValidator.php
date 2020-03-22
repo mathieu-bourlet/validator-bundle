@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\EmailValidator as _EmailValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-Class EmailValidator extends _EmailValidator
+final class EmailValidator extends _EmailValidator
 {
     private $manager;
 
@@ -19,14 +19,15 @@ Class EmailValidator extends _EmailValidator
 
     public function validate($value, Constraint $constraint)
     {
-        if($constraint instanceof Email === false) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Email');
+        if ($constraint instanceof Email === false) {
+            throw new UnexpectedTypeException($constraint, Email::class);
         }
-        if($value === null || $value === '') {
+
+        if ($value === null || $value === '') {
             return;
         }
 
-        if(filter_var($value, FILTER_VALIDATE_EMAIL) === false){
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Email::INVALID_FORMAT_ERROR)
@@ -40,8 +41,7 @@ Class EmailValidator extends _EmailValidator
 
         $domain = $rules->resolve($domainName);
 
-
-        if($domain->isKnown() === false) {
+        if ($domain->isKnown() === false) {
             $this->context->buildViolation($constraint->TLDMessage)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Email::INVALID_TLD_ERROR)

@@ -8,27 +8,19 @@ use AssoConnect\ValidatorBundle\Validator\Constraints\PhoneMobile;
 use AssoConnect\ValidatorBundle\Validator\Constraints\PhoneValidator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
-Class PhoneValidatorTest extends ConstraintValidatorTestCase
+class PhoneValidatorTest extends ConstraintValidatorTestCase
 {
-
     public function createValidator()
     {
         return new PhoneValidator();
     }
 
-    public function testNullIsValid()
-    {
-        $this->validator->validate(null, new Phone());
-        $this->assertNoViolation();
-    }
-
-    public function testEmptyStringIsValid()
-    {
-        $this->validator->validate('', new Phone());
-        $this->assertNoViolation();
-    }
-
     /**
+     * @param $constraint
+     * @param $value
+     * @param $messageField
+     * @param $code
+     *
      * @dataProvider providerInvalidValues
      */
     public function testInvalidValues($constraint, $value, $messageField, $code)
@@ -39,12 +31,15 @@ Class PhoneValidatorTest extends ConstraintValidatorTestCase
                 $messageField => 'myMessage',
             ])
         );
+
         $this
             ->buildViolation('myMessage')
             ->setParameter('{{ value }}', '"' . $value . '"')
             ->setCode($code)
-            ->assertRaised();
+            ->assertRaised()
+        ;
     }
+
     public function providerInvalidValues()
     {
         return [
@@ -59,6 +54,9 @@ Class PhoneValidatorTest extends ConstraintValidatorTestCase
     }
 
     /**
+     * @param $constraint
+     * @param $value
+     *
      * @dataProvider providerValidValues
      */
     public function testValidValues($constraint, $value)
@@ -66,14 +64,16 @@ Class PhoneValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate($value, new $constraint());
         $this->assertNoViolation();
     }
+
     public function providerValidValues()
     {
         return [
+            [Phone::class, null],
+            [Phone::class, ''],
             [Phone::class, '+33123456789'],
             [Phone::class, '+33623456789'],
             [PhoneLandline::class, '+33123456789'],
             [PhoneMobile::class, '+33623456789'],
         ];
     }
-
 }

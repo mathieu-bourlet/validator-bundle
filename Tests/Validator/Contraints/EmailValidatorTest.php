@@ -7,9 +7,11 @@ use AssoConnect\ValidatorBundle\Validator\Constraints\EmailValidator;
 use Pdp\Cache;
 use Pdp\CurlHttpClient;
 use Pdp\Manager;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
-class EmailValidatorTest extends ConstraintValidatorTestCase
+final class EmailValidatorTest extends ConstraintValidatorTestCase
 {
     public function createValidator(): EmailValidator
     {
@@ -18,35 +20,56 @@ class EmailValidatorTest extends ConstraintValidatorTestCase
         return new EmailValidator($manager);
     }
 
-    public function testNullIsValid()
+    public function testInvalidConstraint()
     {
-        $this->validator->validate(null, new Email());
-        $this->assertNoViolation();
-    }
-
-    public function testEmptyStringIsValid()
-    {
-        $this->validator->validate('', new Email());
-        $this->assertNoViolation();
+        $this->expectException(UnexpectedTypeException::class);
+        $this->validator->validate(null, $this->createMock(Constraint::class));
     }
 
     /**
+     * @var $value
+     *
+     * @dataProvider providerValidValues
+     */
+    public function testValidValues($value)
+    {
+        $this->validator->validate($value, new Email());
+        $this->assertNoViolation();
+    }
+
+    public function providerValidValues()
+    {
+        return [
+            [null],
+            [''],
+            ['valid@mail.com'],
+            ['valid.valid@mail.com'],
+            ['valid+valid@mail.com'],
+            ['valid+valid@gmail.com'],
+        ];
+    }
+
+    /**
+     * @param $value
+     * @param $messageField
+     * @param $code
+     *
      * @dataProvider providerInvalidValues
      */
     public function testInvalidValues($value, $messageField, $code)
     {
-        $this->validator->validate(
-            $value,
-            new Email([
-                $messageField => 'myMessage',
-            ])
-        );
+        $this->validator->validate($value, new Email([
+            $messageField => 'testMessage',
+        ]));
+
         $this
-            ->buildViolation('myMessage')
+            ->buildViolation('testMessage')
             ->setParameter('{{ value }}', '"' . $value . '"')
             ->setCode($code)
-            ->assertRaised();
+            ->assertRaised()
+        ;
     }
+
     public function providerInvalidValues()
     {
         return [
@@ -93,24 +116,6 @@ class EmailValidatorTest extends ConstraintValidatorTestCase
                 'TLDMessage',
                 Email::INVALID_TLD_ERROR,
             ],
-        ];
-    }
-
-    /**
-     * @dataProvider providerValidValues
-     */
-    public function testValidValues($value)
-    {
-        $this->validator->validate($value, new Email());
-        $this->assertNoViolation();
-    }
-    public function providerValidValues()
-    {
-        return [
-            ['valid@mail.com'],
-            ['valid.valid@mail.com'],
-            ['valid+valid@mail.com'],
-            ['valid+valid@gmail.com'],
         ];
     }
 }

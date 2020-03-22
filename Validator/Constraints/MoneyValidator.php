@@ -7,9 +7,8 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\Type;
 
-Class MoneyValidator extends ComposeValidator
+final class MoneyValidator extends ComposeValidator
 {
-
     protected function getSupportedConstraint(): string
     {
         return Money::class;
@@ -17,13 +16,12 @@ Class MoneyValidator extends ComposeValidator
 
     protected function getConstraints($value, Constraint $constraint): array
     {
-        if(is_float($value) OR is_integer($value)){
+        if (is_float($value) or is_integer($value)) {
             return [
                 new GreaterThanOrEqual($constraint->min),
                 new LessThan($constraint->max),
             ];
-        }
-        else{
+        } else {
             return [
                 new Type('float'),
             ];
@@ -34,5 +32,4 @@ Class MoneyValidator extends ComposeValidator
     {
         return false;
     }
-
 }

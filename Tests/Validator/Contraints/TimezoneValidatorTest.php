@@ -1,9 +1,11 @@
 <?php
 
-namespace AssoConnect\ValidatorBundle\Validator\Tests\Constraints;
+namespace AssoConnect\ValidatorBundle\Tests\Validator\Constraints;
 
 use AssoConnect\ValidatorBundle\Validator\Constraints\Timezone;
 use AssoConnect\ValidatorBundle\Validator\Constraints\TimezoneValidator;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class TimezoneValidatorTest extends ConstraintValidatorTestCase
@@ -13,29 +15,15 @@ class TimezoneValidatorTest extends ConstraintValidatorTestCase
         return new TimezoneValidator();
     }
 
-    public function testNullIsValid()
+    public function testInvalidConstraint()
     {
-        $this->validator->validate(null, new Timezone());
-
-        $this->assertNoViolation();
-    }
-
-    public function testEmptyStringIsValid()
-    {
-        $this->validator->validate('', new Timezone());
-
-        $this->assertNoViolation();
+        $this->expectException(UnexpectedTypeException::class);
+        $this->validator->validate(null, $this->createMock(Constraint::class));
     }
 
     /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
-     */
-    public function testExpectsStringCompatibleType()
-    {
-        $this->validator->validate(new \stdClass(), new Timezone());
-    }
-
-    /**
+     * @var $timezone
+     *
      * @dataProvider getValidTimezones
      */
     public function testValidTimezones($timezone)
@@ -47,13 +35,17 @@ class TimezoneValidatorTest extends ConstraintValidatorTestCase
 
     public function getValidTimezones()
     {
-        return array(
-            array('Europe/Paris'),
-            array('Europe/Berlin'),
-        );
+        return [
+            [null],
+            [''],
+            ['Europe/Paris'],
+            ['Europe/Berlin'],
+        ];
     }
 
     /**
+     * @var $timezone
+     *
      * @dataProvider getInvalidTimezones
      */
     public function testInvalidTimezones($timezone)
@@ -65,16 +57,17 @@ class TimezoneValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate($timezone, $constraint);
 
         $this->buildViolation('myMessage')
-            ->setParameter('{{ value }}', '"'.$timezone.'"')
+            ->setParameter('{{ value }}', '"' . $timezone . '"')
             ->setCode(Timezone::NO_SUCH_TIMEZONE_ERROR)
-            ->assertRaised();
+            ->assertRaised()
+        ;
     }
 
     public function getInvalidTimezones()
     {
-        return array(
-            array('EN'),
-            array('foobar'),
-        );
+        return [
+            ['EN'],
+            ['foobar'],
+        ];
     }
 }

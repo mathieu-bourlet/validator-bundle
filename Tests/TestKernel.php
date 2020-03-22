@@ -1,17 +1,14 @@
 <?php
 
-namespace AssoConnect\ValidatorBundle\Tests\Functional\App;
+namespace AssoConnect\ValidatorBundle\Tests;
 
 use AssoConnect\ValidatorBundle\AssoConnectValidatorBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
-Class TestKernel extends Kernel
+final class TestKernel extends Kernel
 {
-    /**
-     * {@inheritdoc}
-     */
     public function registerBundles()
     {
         return [
@@ -27,34 +24,20 @@ Class TestKernel extends Kernel
 
     public function getCacheDir()
     {
-        return $this->basePath().'cache/'.$this->environment;
+        return $this->basePath() . 'cache/' . $this->environment;
     }
 
     public function getLogDir()
     {
-        return $this->basePath().'logs';
-    }
-
-    public function getRootDir()
-    {
-        return __DIR__;
-    }
-
-    public function isBooted()
-    {
-        return $this->booted;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        $loader->load(__DIR__.'/config/config.yml');
+        return $this->basePath() . 'logs';
     }
 
     private function basePath()
     {
-        return sys_get_temp_dir().'/AssoConnectValidatorBundle/'.Kernel::VERSION.'/';
+        return sys_get_temp_dir() . '/AssoConnectValidatorBundle/' . Kernel::VERSION . '/';
+    }
+
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
     }
 }
