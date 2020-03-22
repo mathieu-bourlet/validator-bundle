@@ -31,8 +31,6 @@
     "symfony/yaml": "^5.0"
   },
   "require-dev": {
-    "doctrine/annotations": "~1.0",
-    "doctrine/cache": "~1.0",
     "ergebnis/composer-normalize": "^2.3",
     "maglnet/composer-require-checker": "^2.1",
     "phpunit/phpunit": "^7.0",
@@ -48,6 +46,7 @@
     }
   },
   "scripts": {
+    "check-require": "composer-require-checker check composer.json",
     "check-style": "phpcs src tests",
     "fix-style": "phpcbf src tests",
     "normalize": "normalize",
